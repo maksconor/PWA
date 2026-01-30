@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Balance</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Balance">
+  <style>
+    body { margin:0; padding:20px; background:#f5f6fa; font-family:-apple-system,BlinkMacSystemFont;}
+    .header{display:flex;gap:10px;margin-bottom:20px}
+    .logo{width:40px;height:40px;border-radius:50%;background:#003087;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+    .card{background:#fff;border-radius:20px;padding:24px;margin-bottom:20px}
+    .balance{font-size:36px;font-weight:700}
+    .btn{width:100%;padding:16px;border-radius:30px;border:none;background:#000;color:#fff;font-size:16px;margin-bottom:20px}
+    .tabs{display:flex;background:#eaeaea;border-radius:30px;padding:4px;margin-bottom:20px}
+    .tab{flex:1;text-align:center;padding:10px;border-radius:30px}
+    .active{background:#1e6bff;color:#fff}
+    .activity{background:#fff;border-radius:20px;padding:16px}
+    .item{display:flex;justify-content:space-between}
+  </style>
+</head>
+<body>
+  <div class="header"><div class="logo">P</div><div>Balance</div></div>
+  <div class="card"><div class="balance">942,12$</div></div>
+  <button class="btn">Add Money</button>
+  <div class="tabs"><div class="tab active">Activity</div><div class="tab">Currencies</div></div>
+  <div class="activity"><div class="item"><span>FreeCash</span><strong>+15,00$</strong></div></div>
+</body>
+</html>
