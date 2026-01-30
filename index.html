@@ -1,31 +1,138 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Balance</title>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Balance">
-  <style>
-    body { margin:0; padding:20px; background:#f5f6fa; font-family:-apple-system,BlinkMacSystemFont;}
-    .header{display:flex;gap:10px;margin-bottom:20px}
-    .logo{width:40px;height:40px;border-radius:50%;background:#003087;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
-    .card{background:#fff;border-radius:20px;padding:24px;margin-bottom:20px}
-    .balance{font-size:36px;font-weight:700}
-    .btn{width:100%;padding:16px;border-radius:30px;border:none;background:#000;color:#fff;font-size:16px;margin-bottom:20px}
-    .tabs{display:flex;background:#eaeaea;border-radius:30px;padding:4px;margin-bottom:20px}
-    .tab{flex:1;text-align:center;padding:10px;border-radius:30px}
-    .active{background:#1e6bff;color:#fff}
-    .activity{background:#fff;border-radius:20px;padding:16px}
-    .item{display:flex;justify-content:space-between}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PayPal</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PayPal">
+
+<style>
+body{margin:0;background:#f2f4f7;font-family:-apple-system,BlinkMacSystemFont}
+.container{padding:16px;padding-bottom:90px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.avatar{width:36px;height:36px;border-radius:50%;background:#d0d5dd;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.card{background:#fff;border-radius:18px;padding:20px;margin-bottom:16px}
+.label{font-size:14px;color:#667085}
+.balance{font-size:34px;font-weight:700;margin-top:6px}
+.actions{display:flex;gap:12px;margin:16px 0}
+.action{flex:1;background:#003087;color:#fff;border-radius:30px;padding:14px;text-align:center;font-weight:600}
+.section{font-weight:600;margin:20px 0 8px}
+.activity{background:#fff;border-radius:18px}
+.item{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid #eee}
+.item:last-child{border-bottom:none}
+.logo{width:36px;height:36px;border-radius:50%;background:#e4e7ec;overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:cover}
+.info{flex:1}
+.info span{font-weight:500}
+.info small{color:#667085}
+.amount{font-weight:600}
+input{display:none}
+
+/* bottom tabs */
+.tabs{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e4e7ec;display:flex;padding:10px 0}
+.tab{flex:1;text-align:center;font-size:12px;color:#667085}
+.tab.active{color:#003087;font-weight:600}
+</style>
 </head>
+
 <body>
-  <div class="header"><div class="logo">P</div><div>Balance</div></div>
-  <div class="card"><div class="balance">942,12$</div></div>
-  <button class="btn">Add Money</button>
-  <div class="tabs"><div class="tab active">Activity</div><div class="tab">Currencies</div></div>
-  <div class="activity"><div class="item"><span>FreeCash</span><strong>+15,00$</strong></div></div>
+<div class="container">
+
+<div class="header">
+<label class="avatar">
+<input type="file" accept="image/*" onchange="setAvatar(event)">
+<img id="avatar">
+</label>
+<strong>Home</strong>
+<div></div>
+</div>
+
+<div class="card">
+<div class="label">PayPal balance</div>
+<div class="balance" id="balance">$942.12</div>
+</div>
+
+<div class="actions">
+<div class="action" onclick="addTx()">Add money</div>
+<div class="action" onclick="editBalance()">Send</div>
+</div>
+
+<div class="section">Recent activity</div>
+<div class="activity" id="list"></div>
+
+</div>
+
+<div class="tabs">
+<div class="tab active">Home</div>
+<div class="tab">Wallet</div>
+<div class="tab">Activity</div>
+<div class="tab">Profile</div>
+</div>
+
+<script>
+let balance=localStorage.balance||"$942.12";
+let tx=JSON.parse(localStorage.tx||"[]");
+
+if(tx.length===0){
+tx=[
+{name:"Uber",date:"Today",amount:"-$18.40",logo:""},
+{name:"Amazon",date:"Yesterday",amount:"-$72.99",logo:""},
+{name:"FreeCash",date:"Sep 14",amount:"+$15.00",logo:""},
+{name:"Apple",date:"Sep 12",amount:"-$4.99",logo:""}
+];
+}
+
+function render(){
+document.getElementById("balance").innerText=balance;
+const l=document.getElementById("list");
+l.innerHTML="";
+tx.forEach((t,i)=>{
+l.innerHTML+=`
+<div class="item">
+<label class="logo">
+<input type="file" accept="image/*" onchange="setLogo(event,${i})">
+<img src="${t.logo}">
+</label>
+<div class="info">
+<span onclick="editName(${i})">${t.name}</span><br>
+<small>${t.date}</small>
+</div>
+<div class="amount">${t.amount}</div>
+</div>`;
+});
+localStorage.balance=balance;
+localStorage.tx=JSON.stringify(tx);
+}
+
+function editBalance(){
+const b=prompt("Balance:",balance);
+if(b){balance=b;render();}
+}
+function addTx(){
+tx.unshift({name:"New transaction",date:"Just now",amount:"+$10.00",logo:""});
+render();
+}
+function editName(i){
+const n=prompt("Name:",tx[i].name);
+if(n){tx[i].name=n;render();}
+}
+function setAvatar(e){
+const img=document.getElementById("avatar");
+img.src=URL.createObjectURL(e.target.files[0]);
+localStorage.avatar=img.src;
+}
+function setLogo(e,i){
+tx[i].logo=URL.createObjectURL(e.target.files[0]);
+render();
+}
+if(localStorage.avatar){
+document.getElementById("avatar").src=localStorage.avatar;
+}
+render();
+</script>
+
 </body>
 </html>
